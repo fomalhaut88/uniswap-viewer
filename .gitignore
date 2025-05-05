@@ -1,0 +1,8 @@
+*~
+__pycache__
+
+/.venv/
+/build/
+/*.egg-info/
+/tests/
+/doc/
