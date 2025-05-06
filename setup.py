@@ -8,7 +8,7 @@ def get_long_description():
 
 setup(
     name='uniswap-viewer',
-    version="0.1.7",
+    version="0.1.8",
     packages=['uniswap_viewer'],
     author="Alexander Fomalhaut",
     url="https://github.com/fomalhaut88/uniswap-viewer",

@@ -63,7 +63,7 @@ liquidity = tick_data['liquidityGross']
 ### Stream example
 
 ```python
-from uniswap_viewer.viewer_async import Viewer, stream_new_blocks
+from uniswap_viewer.viewer_async import Viewer as ViewerAsync, stream_new_blocks
 from web3 import AsyncWeb3
 
 w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider("<your_provider_url>"))
@@ -73,7 +73,7 @@ await viewer.init()
 
 async for block_num in stream_new_blocks(w3, timeout=3):
     price = await viewer.get_price(block_num=block_num)
-    
+
     tick = viewer.calc_tick(price, normalize=True)
     tick_data = await viewer.get_tick_data(tick, block_num=block_num)
     liquidity = tick_data['liquidityGross']
