@@ -125,18 +125,23 @@ class Viewer:
         )
         return dict(zip(TICKS_KEYS, tick_data))
 
-    def calc_tick(self, price: float) -> int:
+    def calc_tick(self, price: float, normalize: bool = False) -> int:
         """
         Calculates the tick index corresponding to a given price.
 
         Args:
-            price (float): Price of token0 in token1.
+            price (float): Price of token0 in token1 units.
+            normalize (bool): Apply `tick_slot` in the end to get the tick slot. 
+                              Defaults to False.
 
         Returns:
-            int: The closest tick index that matches the price.
+            int: Closest tick index.
         """
         price *= 10 ** (self._decimals0 - self._decimals1)
-        return math.floor(math.log(price) / math.log(1.0001))
+        tick = math.floor(math.log(price) / math.log(1.0001))
+        if normalize:
+            tick = self.tick_slot(tick)
+        return tick
 
     def tick_spacing(self) -> int:
         """
@@ -187,8 +192,8 @@ class Viewer:
         spacing = self.tick_spacing()
         assert tick % spacing == 0, \
             f"Tick must be multiple of {spacing} due to fee = {self._fee}, " \
-            f"{tick} given. Please, use `tick = viewer.tick_slot(tick)` " \
-            f"to normalize."
+            f"{tick} given. Please, use `tick = viewer.tick_slot(tick)` or " \
+            f"`tick = viewer.calc_tick(price, normalize=True)` to normalize."
 
 
 def stream_new_blocks(w3: Web3, timeout: int = 1) -> Generator[int]:
