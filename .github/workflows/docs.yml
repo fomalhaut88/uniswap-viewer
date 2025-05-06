@@ -22,7 +22,7 @@ jobs:
         run: pip install pdoc
 
       - name: Generate documentation
-        run: pdoc uniswap_viewer --output-dir docs --html --force
+        run: pdoc uniswap_viewer --output-dir docs
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
