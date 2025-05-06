@@ -1,46 +1,74 @@
 # uniswap-viewer
 
-uniswap-viewer - A lightweight Uniswap V3 data access library for Python.
+A lightweight Python library for accessing Uniswap V3 on-chain data.
 
-This library provides a convenient interface for accessing on-chain data from Uniswap V3 pools,
-including price calculation, tick information, and block streaming.
+`uniswap-viewer` provides a clean and efficient interface for reading price and 
+tick information directly from Uniswap V3 smart contracts using `web3.py`. It 
+supports both synchronous and asynchronous workflows and is ideal for 
+developers, analysts, and algorithmic traders.
 
-Features:
-- Support for both synchronous and asynchronous Web3 clients.
-- Price retrieval based on `sqrtPriceX96` and token decimals.
-- Tick data decoding using Uniswap V3 ABI and tick key mappings.
-- Tick spacing and tick slot calculations based on pool fee tiers.
-- Utility functions for ABI loading and token address filtering.
-- Block streaming generator to react to new blocks in real time.
+## Features
 
-Modules:
-- `utils.py`: Internal helpers (ABI loading, tick keys, address filtering).
-- `viewer_sync.py`: Synchronous Uniswap V3 pool viewer using `web3.py`.
-- `viewer_async.py`: Asynchronous viewer compatible with async Web3 providers.
-- (Pluggable design: future viewers can be added for batched queries, multicall, etc.)
+- Supports both sync and async Web3 clients  
+- Fetches token prices using `sqrtPriceX96` and token decimals  
+- Retrieves detailed tick data via ABI-decoded contract calls  
+- Computes tick index, tick spacing, and tick slot  
+- Includes block streaming generator to track new blocks in real time  
+- Built-in utilities for loading ABIs and checking Ethereum addresses  
 
-Requirements:
+## Modules
+
+- `viewer_sync.py` – synchronous Uniswap V3 viewer using `web3.Web3`
+- `viewer_async.py` – asynchronous Uniswap V3 viewer using `web3.AsyncWeb3`
+- `utils.py` – helper functions (ABI loading, tick keys, address filters)
+
+## Usage
+
+### Sync example
+
+```python
+from uniswap_viewer import ViewerSync, get_token_address
+from web3 import Web3
+
+w3 = Web3(Web3.HTTPProvider("<your_provider_url>"))
+
+token0 = get_token_address("usdt")
+token1 = get_token_address("weth")
+
+viewer = ViewerSync(w3, token0, token1, fee=3000)
+viewer.init()
+price = viewer.get_price()
+```
+
+### Async example
+
+```python
+from uniswap_viewer import ViewerAsync, get_token_address
+from web3 import AsyncWeb3
+
+w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider("<your_provider_url>"))
+
+token0 = get_token_address("usdt")
+token1 = get_token_address("weth")
+
+viewer = ViewerAsync(w3, token0, token1, fee=3000)
+await viewer.init()
+price = await viewer.get_price()
+```
+
+## Requirements
+
 - Python 3.8+
-- `web3` library (with appropriate provider setup)
+- `web3` library (sync or async)
 
-Usage example (sync):
-    >>> from uniswap_viewer.viewer_sync import Viewer
-    >>> from web3 import Web3
-    >>> w3 = Web3(Web3.HTTPProvider(...))
-    >>> v = Viewer(w3, token0_address, token1_address, fee=3000)
-    >>> v.init()
-    >>> price = v.get_price()
+## Motivation
 
-Usage example (async):
-    >>> from uniswap_viewer.viewer_async import Viewer
-    >>> from web3 import AsyncWeb3
-    >>> w3 = AsyncWeb3(...)
-    >>> v = Viewer(w3, token0_address, token1_address, fee=3000)
-    >>> await v.init()
-    >>> price = await v.get_price()
+This library is designed for:
 
-This library is designed for developers, analysts, and trading systems
-that need efficient and readable access to raw Uniswap V3 data without relying
-on external APIs like The Graph.
+- Developers integrating Uniswap data directly from the blockchain
+- Quants and analysts building custom tooling
+- Avoiding reliance on third-party APIs like The Graph
 
-License: MIT
+## License
+
+MIT

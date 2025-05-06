@@ -88,6 +88,7 @@ class Viewer:
         Returns:
             float: Price of token0 in terms of token1.
         """
+        self._check_initialized()
         slot0 = await self._pool_contract.functions.slot0().call(
             block_identifier=block_num
         )
@@ -108,6 +109,7 @@ class Viewer:
         Returns:
             dict: Tick data fields mapped by standard TICKS_KEYS.
         """
+        self._check_initialized()
         tick_data = await self._pool_contract.functions.ticks(tick).call(
             block_identifier=block_num
         )
@@ -162,6 +164,11 @@ class Viewer:
         assert pool_address != "0x0000000000000000000000000000000000000000", \
             "Could not find pool for the tokens."
         return pool_address
+
+    def _check_initialized(self):
+        assert self._pool_contract is not None, \
+            "Instance is not initialized, " \
+            "run `await instance.init()` right after creation."
 
 
 async def stream_new_blocks(w3: AsyncWeb3, timeout: int = 1) -> Generator[int]:

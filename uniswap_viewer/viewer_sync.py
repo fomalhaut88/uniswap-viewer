@@ -2,13 +2,15 @@
 viewer_sync.py - Synchronous interface for accessing Uniswap V3 pool data.
 
 This module provides a synchronous viewer for querying Uniswap V3 pools using
-web3.py. It allows retrieving token prices, tick data, and computing tick-related
-values such as tick index and tick slots.
+web3.py. It allows retrieving token prices, tick data, and computing 
+tick-related values such as tick index and tick slots.
 
 Main components:
 - `Viewer`: a class for interacting with a Uniswap V3 pool.
-- `stream_new_blocks`: generator function to yield new block numbers as they appear.
-- `get_decimals`: helper function to fetch token decimals from an ERC-20 contract.
+- `stream_new_blocks`: generator function to yield new block numbers as they 
+                       appear.
+- `get_decimals`: helper function to fetch token decimals from an ERC-20 
+                  contract.
 """
 
 import math
@@ -84,11 +86,13 @@ class Viewer:
         The result is adjusted for token decimals.
 
         Args:
-            block_num (int, optional): Specific block number. If None, uses latest.
+            block_num (int, optional): Specific block number. If None, uses 
+                                       latest.
 
         Returns:
             float: The spot price of token0 denominated in token1.
         """
+        self._check_initialized()
         slot0 = self._pool_contract.functions.slot0().call(
             block_identifier=block_num
         )
@@ -104,11 +108,13 @@ class Viewer:
 
         Args:
             tick (int): The tick index.
-            block_num (int, optional): Specific block number. If None, uses latest.
+            block_num (int, optional): Specific block number. If None, uses 
+                                       latest.
 
         Returns:
             dict: A dictionary of tick data fields, keyed by TICKS_KEYS.
         """
+        self._check_initialized()
         tick_data = self._pool_contract.functions.ticks(tick).call(
             block_identifier=block_num
         )
@@ -145,7 +151,8 @@ class Viewer:
         """
         Calculates the tick slot for a given tick.
 
-        A tick slot is the lower bound of the spacing interval that contains the tick.
+        A tick slot is the lower bound of the spacing interval that contains the 
+        tick.
 
         Args:
             tick (int): The tick index.
@@ -165,6 +172,11 @@ class Viewer:
         assert pool_address != "0x0000000000000000000000000000000000000000", \
             "Could not find pool for the tokens."
         return pool_address
+
+    def _check_initialized(self):
+        assert self._pool_contract is not None, \
+            "Instance is not initialized, " \
+            "run `instance.init()` right after creation."
 
 
 def stream_new_blocks(w3: Web3, timeout: int = 1) -> Generator[int]:
