@@ -15,6 +15,7 @@ Main components:
 
 import math
 import time
+import weakref
 from typing import Optional, Dict, Any
 from collections.abc import Generator
 
@@ -59,9 +60,9 @@ class Viewer:
             "token0 must go after token1 in bit representation."
 
         # Attributes
-        self._w3 = w3
-        self._token0 = self._w3.to_checksum_address(token0)
-        self._token1 = self._w3.to_checksum_address(token1)
+        self._w3 = weakref.ref(w3)
+        self._token0 = self._w3().to_checksum_address(token0)
+        self._token1 = self._w3().to_checksum_address(token1)
         self._fee = fee
         self._decimals0 = None
         self._decimals1 = None
@@ -77,11 +78,12 @@ class Viewer:
         Raises:
             AssertionError: If no pool exists for the provided tokens and fee.
         """
-        self._decimals0 = get_decimals(self._w3, self._token0)
-        self._decimals1 = get_decimals(self._w3, self._token1)
+        self._decimals0 = get_decimals(self._w3(), self._token0)
+        self._decimals1 = get_decimals(self._w3(), self._token1)
         self._pool_address = self._get_pool_address()
-        self._pool_contract = self._w3.eth.contract(address=self._pool_address, 
-                                                    abi=get_abi('pool-abi'))
+        self._pool_contract = self._w3().eth.contract(
+            address=self._pool_address, abi=get_abi('pool-abi')
+        )
 
     def get_price(self, block_num: Optional[int] = None) -> float:
         """
@@ -173,7 +175,7 @@ class Viewer:
         return tick - tick % self.tick_spacing()
 
     def _get_pool_address(self) -> str:
-        factory_contract = self._w3.eth.contract(
+        factory_contract = self._w3().eth.contract(
             address='0x1F98431c8aD98523631AE4a59f267346ea31F984', 
             abi=get_abi('factory-abi'),
         )
