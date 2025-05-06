@@ -20,7 +20,7 @@ from collections.abc import Generator
 
 from web3 import Web3
 
-from .utils import get_abi, TICKS_KEYS
+from .utils import get_abi, TICKS_KEYS, prepare_token_address
 
 
 class Viewer:
@@ -46,6 +46,10 @@ class Viewer:
         Raises:
             AssertionError: If fee is invalid or token0 is not > token1 in bits.
         """
+        # Prepare arguments
+        token0 = prepare_token_address(token0)
+        token1 = prepare_token_address(token1)
+
         # Check arguments
         assert fee in (100, 500, 3000, 10000), \
             "Allowed fee must be in (100, 500, 3000, 10000) " \

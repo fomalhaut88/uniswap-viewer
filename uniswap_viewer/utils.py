@@ -20,10 +20,26 @@ All functions are intended for internal use, but may also be helpful for
 developers extending or integrating the uniswap_viewer library.
 """
 
+import re
 import json
 import time
 from importlib import resources
 from typing import Optional
+
+
+REGEX_ADDRESS = re.compile(r'^0x[0-9a-fA-F]{40}$')
+"""
+A compiled regular expression to match valid Ethereum addresses.
+
+Matches any string that starts with '0x' followed by exactly 40 hexadecimal 
+characters (case-insensitive).
+
+Example:
+    >>> REGEX_ADDRESS.match("0x1234567890abcdef1234567890abcdef12345678") is not None
+    True
+    >>> REGEX_ADDRESS.match("not-an-address") is None
+    True
+"""
 
 
 TICKS_KEYS = [
@@ -141,3 +157,35 @@ def get_token_address(symbol: str) -> str:
         raise KeyError(
             f"Could not find address {str(exc)} within uniswap-viewer library"
         )
+
+
+def prepare_token_address(token_or_symbol: str) -> str:
+    """
+    Resolves either a token symbol or an Ethereum address to a valid address 
+    string.
+
+    If the input matches the standard Ethereum address format (via 
+    REGEX_ADDRESS), it is returned as-is. Otherwise, the function looks up the 
+    symbol in the internal token map using `get_token_address`.
+
+    Args:
+        token_or_symbol (str): Either a token symbol (e.g. "DAI", "USDC")
+                               or a full Ethereum address.
+
+    Returns:
+        str: A valid Ethereum address.
+
+    Raises:
+        KeyError: If a non-address string is provided and not found in the token 
+                  map.
+
+    Example:
+        >>> prepare_token_address("DAI")
+        '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+        >>> prepare_token_address("0x1234567890abcdef1234567890abcdef12345678")
+        '0x1234567890abcdef1234567890abcdef12345678'
+    """
+    if REGEX_ADDRESS.match(token_or_symbol):
+        return token_or_symbol
+    else:
+        return get_token_address(token_or_symbol)

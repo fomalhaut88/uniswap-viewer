@@ -32,10 +32,7 @@ from web3 import Web3
 
 w3 = Web3(Web3.HTTPProvider("<your_provider_url>"))
 
-token0 = get_token_address("usdt")
-token1 = get_token_address("weth")
-
-viewer = ViewerSync(w3, token0, token1, fee=3000)
+viewer = ViewerSync(w3, "usdt", "weth", fee=3000)
 viewer.init()
 price = viewer.get_price()
 ```
@@ -48,10 +45,7 @@ from web3 import AsyncWeb3
 
 w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider("<your_provider_url>"))
 
-token0 = get_token_address("usdt")
-token1 = get_token_address("weth")
-
-viewer = ViewerAsync(w3, token0, token1, fee=3000)
+viewer = ViewerAsync(w3, "usdt", "weth", fee=3000)
 await viewer.init()
 price = await viewer.get_price()
 ```
