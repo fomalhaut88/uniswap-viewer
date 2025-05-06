@@ -33,7 +33,12 @@ w3 = Web3(Web3.HTTPProvider("<your_provider_url>"))
 
 viewer = ViewerSync(w3, "usdt", "weth", fee=3000)
 viewer.init()
+
 price = viewer.get_price()
+
+tick = viewer.calc_tick(price, normalize=True)
+tick_data = viewer.get_tick_data(tick)
+liquidity = tick_data['liquidityGross']
 ```
 
 ### Async example
@@ -46,7 +51,33 @@ w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider("<your_provider_url>"))
 
 viewer = ViewerAsync(w3, "usdt", "weth", fee=3000)
 await viewer.init()
+
 price = await viewer.get_price()
+
+tick = viewer.calc_tick(price, normalize=True)
+tick_data = await viewer.get_tick_data(tick)
+liquidity = tick_data['liquidityGross']
+```
+
+### Stream example
+
+```python
+from uniswap_viewer.viewer_async import Viewer, stream_new_blocks
+from web3 import AsyncWeb3
+
+w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider("<your_provider_url>"))
+
+viewer = ViewerAsync(w3, "usdt", "weth", fee=3000)
+await viewer.init()
+
+async for block_num in stream_new_blocks(w3, timeout=3):
+    price = await viewer.get_price(block_num=block_num)
+    
+    tick = viewer.calc_tick(price, normalize=True)
+    tick_data = await viewer.get_tick_data(tick, block_num=block_num)
+    liquidity = tick_data['liquidityGross']
+
+    print(price, liquidity)
 ```
 
 ## Requirements
