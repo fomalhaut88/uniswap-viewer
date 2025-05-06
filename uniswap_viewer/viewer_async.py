@@ -13,6 +13,10 @@ Main components:
 
 import math
 import asyncio
+from typing import Optional, Dict, Any
+from collections.abc import Generator
+
+from web3 import AsyncWeb3
 
 from .utils import get_abi, TICKS_KEYS
 
@@ -25,7 +29,8 @@ class Viewer:
     in an async context.
     """
 
-    def __init__(self, w3, token0, token1, fee=3000):
+    def __init__(self, w3: AsyncWeb3, token0: str, token1: str, 
+                 fee: int = 3000):
         """
         Initializes the Viewer instance.
 
@@ -73,7 +78,7 @@ class Viewer:
         self._pool_contract = self._w3.eth.contract(address=self._pool_address, 
                                                     abi=get_abi('pool-abi'))
 
-    async def get_price(self, block_num=None):
+    async def get_price(self, block_num: Optional[int] = None) -> float:
         """
         Asynchronously fetches the pool price as a float.
 
@@ -91,7 +96,8 @@ class Viewer:
         price *= 10 ** (self._decimals1 - self._decimals0)
         return price
 
-    async def get_tick_data(self, tick, block_num=None):
+    async def get_tick_data(self, tick: int, 
+                            block_num: Optional[int] = None) -> Dict[str, Any]:
         """
         Retrieves detailed tick information from the pool.
 
@@ -107,7 +113,7 @@ class Viewer:
         )
         return dict(zip(TICKS_KEYS, tick_data))
 
-    def calc_tick(self, price):
+    def calc_tick(self, price: float) -> int:
         """
         Calculates the tick index corresponding to a given price.
 
@@ -120,7 +126,7 @@ class Viewer:
         price *= 10 ** (self._decimals0 - self._decimals1)
         return math.floor(math.log(price) / math.log(1.0001))
 
-    def tick_spacing(self):
+    def tick_spacing(self) -> int:
         """
         Returns the tick spacing associated with the pool's fee tier.
 
@@ -134,7 +140,7 @@ class Viewer:
             10000: 200,
         }[self._fee]
 
-    def tick_slot(self, tick):
+    def tick_slot(self, tick: int) -> int:
         """
         Calculates the tick slot for a given tick index.
 
@@ -158,7 +164,7 @@ class Viewer:
         return pool_address
 
 
-async def stream_new_blocks(w3, timeout=1):
+async def stream_new_blocks(w3: AsyncWeb3, timeout: int = 1) -> Generator[int]:
     """
     Asynchronously yields new block numbers as they appear on-chain.
 
@@ -184,7 +190,7 @@ async def stream_new_blocks(w3, timeout=1):
         await asyncio.sleep(timeout)
 
 
-async def get_decimals(w3, token):
+async def get_decimals(w3: AsyncWeb3, token: str) -> int:
     """
     Asynchronously fetches the number of decimals of an ERC-20 token.
 
