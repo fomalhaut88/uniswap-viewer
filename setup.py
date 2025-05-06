@@ -8,18 +8,16 @@ def get_long_description():
 
 setup(
     name='uniswap-viewer',
-    version="0.1.3",
+    version="0.1.4",
     packages=['uniswap_viewer'],
     author="Alexander Fomalhaut",
     url="https://github.com/fomalhaut88/uniswap-viewer",
     license="MIT",
-    description="Lightweight Python library for reading Uniswap V3 prices and tick data via Web3.",
+    description="Lightweight Python library for reading Uniswap V3 prices and "
+                "tick data via Web3.",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     install_requires=[
-        'aiohttp>=3.11',
-        'pdoc>=15.0',
-        'requests>=2.32',
         'web3>=7.11',
     ],
     package_data={
