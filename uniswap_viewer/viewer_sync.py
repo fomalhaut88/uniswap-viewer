@@ -119,6 +119,7 @@ class Viewer:
             dict: A dictionary of tick data fields, keyed by TICKS_KEYS.
         """
         self._check_initialized()
+        self._check_available_tick(tick)
         tick_data = self._pool_contract.functions.ticks(tick).call(
             block_identifier=block_num
         )
@@ -181,6 +182,13 @@ class Viewer:
         assert self._pool_contract is not None, \
             "Instance is not initialized, " \
             "run `instance.init()` right after creation."
+
+    def _check_available_tick(self, tick):
+        spacing = self.tick_spacing()
+        assert tick % spacing == 0, \
+            f"Tick must be multiple of {spacing} due to fee = {self._fee}, " \
+            f"{tick} given. Please, use `tick = viewer.tick_slot(tick)` " \
+            f"to normalize."
 
 
 def stream_new_blocks(w3: Web3, timeout: int = 1) -> Generator[int]:
