@@ -19,7 +19,9 @@ jobs:
           python-version: 3.12
 
       - name: Install pdoc
-        run: pip install pdoc
+        run: |
+          pip install .
+          pip install pdoc
 
       - name: Generate documentation
         run: pdoc uniswap_viewer --output-dir docs
