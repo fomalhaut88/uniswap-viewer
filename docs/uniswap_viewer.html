@@ -122,7 +122,7 @@ developers, analysts, and algorithmic traders.</p>
 <h3 id="stream-example">Stream example</h3>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn"><a href="uniswap_viewer/viewer_async.html">uniswap_viewer.viewer_async</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">Viewer</span><span class="p">,</span> <span class="n">stream_new_blocks</span>
+<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn"><a href="uniswap_viewer/viewer_async.html">uniswap_viewer.viewer_async</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">Viewer</span> <span class="k">as</span> <span class="n">ViewerAsync</span><span class="p">,</span> <span class="n">stream_new_blocks</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">web3</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncWeb3</span>
 
 <span class="n">w3</span> <span class="o">=</span> <span class="n">AsyncWeb3</span><span class="p">(</span><span class="n">AsyncWeb3</span><span class="o">.</span><span class="n">AsyncHTTPProvider</span><span class="p">(</span><span class="s2">&quot;&lt;your_provider_url&gt;&quot;</span><span class="p">))</span>
@@ -231,7 +231,7 @@ developers, analysts, and algorithmic traders.</p>
 </span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="sd">### Stream example</span>
 </span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>
 </span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="sd">```python</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">from uniswap_viewer.viewer_async import Viewer, stream_new_blocks</span>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="sd">from uniswap_viewer.viewer_async import Viewer as ViewerAsync, stream_new_blocks</span>
 </span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="sd">from web3 import AsyncWeb3</span>
 </span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>
 </span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="sd">w3 = AsyncWeb3(AsyncWeb3.AsyncHTTPProvider(&quot;&lt;your_provider_url&gt;&quot;))</span>
